@@ -7,6 +7,8 @@ const {postalldata,getalldata} = require('./controllers/products.controller');
 const {signup,login}=require('./controllers/user.controller');
 const jwt = require('jsonwebtoken');
 const {getwishlist,postwishlist,delewishlist}=require( './controllers/wishlist.controler')
+const cors = require('cors');
+app.use(cors());
 connectDb();
 app.use(express.json());
 app.post('/',postalldata );

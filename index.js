@@ -7,6 +7,9 @@ const {postalldata,getalldata} = require('./controllers/products.controller');
 const {signup,login}=require('./controllers/user.controller');
 const jwt = require('jsonwebtoken');
 const {getwishlist,postwishlist,delewishlist}=require( './controllers/wishlist.controler')
+const {postcard,deletcard,getcard}=require('./controllers/card.controller');
+const {postaddress,deletaddress,getaddress}=require('./controllers/address.controller');
+
 const cors = require('cors');
 app.use(cors());
 connectDb();
@@ -18,6 +21,12 @@ app.post('/api/auth/login',login)
 app.post('/api/wishlist',postwishlist)
 app.delete('/api/wishlist/:id',delewishlist)
 app.get('/api/wishlist',getwishlist)
+app.post( '/api/card',postcard)
+app.delete('/api/card/:id',deletcard)
+app.get('/api/card',getcard)
+app.post('/api/address',postaddress)
+app.delete('/api/address/:id',deletaddress)
+app.get('/api/address',getaddress)
 
 
 mongoose.connection.once('open',()=>{

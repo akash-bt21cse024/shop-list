@@ -13,7 +13,8 @@ const wishlistSchema = new Schema({
     category: String,
     brand: String,
     discountPercentage: Number,
-    stock: Number
+    stock: Number,
+    images: Array
 });
 
 const Wishlist = mongoose.model("Wishlist", wishlistSchema);

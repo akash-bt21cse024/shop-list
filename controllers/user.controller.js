@@ -5,12 +5,21 @@ const secretkey = 'uififgjiogifjdogth';
 // function for signup
 const signup=  async (req,res)=>{
     try{
-      console.log(req.body)
-      const user = new users(req.body);
+        const {name,email,password,number}=req.body;
+    const flag= await users.findOne({number});
+      
+      if(!flag )
+     { const user = new users( {name,email,password,number});
       await user.save();
       res.status(201).json({
         status:"success"
-      })
+      })}
+      else{
+        res.status(400).json({
+          status :"fail",
+          data:{errorMessage:"it is already in user"}
+        })
+      }
 
     }
     catch(err){

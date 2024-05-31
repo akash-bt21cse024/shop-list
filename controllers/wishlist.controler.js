@@ -1,72 +1,95 @@
-const wislist=require('../model/wishlist.model');
+const Wishlist = require("../model/wishlist.model");
 
-const postwishlist =  async(req,res)=>{
-try{
-const product = req.body
-  const flag = await wislist.findOne({id:product.id});
-  if(!flag){
-    const data= new wislist(product);
-    await data.save();
-    res.status(201).json({
-      status:"success"
-    })
-  }else{
-    console.log("iteam already in wishlist");
-    res.status(400).json({
-      status:"fail",
-      data:{errorMessage:"it is already in wishlist"}
-    })
-  }
-}catch(err){
-  res.status(500).json({
-    status:"fail",
-    data:{errorMessage: "it is fail to post wishlist"}
-  })
-  console.log('this is err--',err)
-}
-  
-}
+// POST: Add a product to the wishlist
+const postwishlist = async (req, res) => {
+  try {
+    const { product, userid: userId } = req.body;
 
-
-
-const delewishlist =async(req,res)=>{
-  try{
-    
-    const data = await wislist.findOneAndDelete({id:req.params.id});
-    if(!data){
-      res.status(400).json({
-        status:"fail",
-        data:{errorMessage:"it is not in wishlist"}
-      })
-    }else{
-      res.status(200).json({
-        status:"success"
-      })
+    const flag = await Wishlist.findOne({ id: userId });
+    console.log(flag);
+    if (!flag) {
+      const newwishlist = new Wishlist({ id: userId, wishlist: [product] });
+      await newwishlist.save();
+      res.status(201).json({ status: "success", messge: "make new wishlist" });
+    } else {
+      let array = flag.wishlist;
+      array = [...array, product];
+      await Wishlist.updateOne({ id: userId }, { $set: { wishlist: array } });
+      res
+        .status(201)
+        .json({ status: "success", data: { message: "Added to wishlist" } });
     }
-  }catch(err){
+  } catch (err) {
     res.status(500).json({
-      status:"fail",
-      data:{errorMessage: "it is fail to delete wishlist"}
-    })
-    console.log('this is err--',err)
+      status: "fail",
+      data: { errorMessage: "Failed to post wishlist" },
+    });
+    console.error("Error:", err);
   }
-}
+};
 
-const getwishlist =async(req,res)=>{
-  try{
-    const data = await wislist.find();
-    res.status(200).json({
-      status:"success",
-      data:data
-    })
-  }catch(err){
+// DELETE: Remove a product from the wishlist
+const delewishlist = async (req, res) => {
+const temp=req.params.userid;
+  const temp1=temp.split("+");
+  
+  const userId=temp1[0];
+  const productId=temp1[1];
+  try {
+    const flag = await Wishlist.findOne({ id: userId });
+
+    if (flag) {
+      const arry = flag.wishlist;
+
+      let newarray = arry.filter((item) => item._id !== productId);
+      console.log(newarray);
+
+      await Wishlist.updateOne(
+        { id: userId },
+        { $set: { wishlist: newarray } },
+      );
+      res.status(200).json({
+        status: "success",
+        message: "product removed from wishlist",
+      });
+    } else {
+      res
+        .status(400)
+        .json({ status: "fail", data: { errorMessage: "user not found" } });
+    }
+  } catch (err) {
     res.status(500).json({
-      status:"fail",
-      data:{errorMessage: "it is fail to get wishlist"}
-    })
-    console.log('this is err--',err)
+      status: "fail",
+      data: { errorMessage: "Failed to delete from wishlist" },
+    });
+    console.error("Error---:", err);
   }
-}
+};
 
+// GET: Retrieve the wishlist for a user
+const getwishlist = async (req, res) => {
+  try {
+    const userId=req.params.userid;
+    
+  
+    const flag = await Wishlist.findOne({ id: userId });
 
-module.exports = {postwishlist,delewishlist,getwishlist};
+    if (flag) {
+      const data = flag.wishlist;
+      res.status(200).json({ status: "success", data: data });
+    } else {
+      const newwishlist = new Wishlist({ id: userId, wishlist: [] });
+      await newwishlist.save();
+
+      res.status(201).json({ status: "create new user", data: [] });
+    }
+  } catch (err) {
+    res.status(500).json({
+      status: "fail",
+      data: { errorMessage: "Failed to get wishlist" },
+    });
+    console.error("Error:", err);
+  }
+};
+
+module.exports = { postwishlist, delewishlist, getwishlist };

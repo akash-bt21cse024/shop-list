@@ -12,7 +12,9 @@ const postcard = async (req, res) => {
       res.status(201).json({ status: "success", messge: "make new card" });
     } else {
       let array = flag.card;
-      array = [...array, product];
+      const tempflag= array.some(item => item._id === product._id);
+      if(!tempflag){
+      array = [...array, product];}
       await cards.updateOne({ id: userId }, { $set: { card: array } });
       res
         .status(201)

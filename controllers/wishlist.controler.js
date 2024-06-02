@@ -13,7 +13,9 @@ const postwishlist = async (req, res) => {
       res.status(201).json({ status: "success", messge: "make new wishlist" });
     } else {
       let array = flag.wishlist;
-      array = [...array, product];
+      const tempflag= array.some(item => item._id === product._id);
+      if(!tempflag){
+      array = [...array, product];}
       await Wishlist.updateOne({ id: userId }, { $set: { wishlist: array } });
       res
         .status(201)

@@ -41,14 +41,19 @@ const temp=req.params.userid;
 
     if (flag) {
       const arry = flag.card;
-
-      let newarray = arry.filter((item) => item._id !== productId);
+      if(productId==='###')
+      {await cards.updateOne(
+        { id: userId },
+        { $set: { card: []} },
+      );}
+      else
+     { let newarray = arry.filter((item) => item._id !== productId);
       console.log(newarray);
 
       await cards.updateOne(
         { id: userId },
         { $set: { card: newarray } },
-      );
+      );}
       res.status(200).json({
         status: "success",
         message: "product removed from card",

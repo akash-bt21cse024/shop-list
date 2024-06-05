@@ -25,8 +25,8 @@ app.post( '/api/card',postcard)
 app.delete('/api/card/:userid',deletcard)
 app.get('/api/card/:userid',getcard)
 app.post('/api/address',postaddress)
-app.delete('/api/address/:id',deletaddress)
-app.get('/api/address',getaddress)
+app.delete('/api/address/:userid',deletaddress)
+app.get('/api/address/:userid',getaddress)
 
 
 mongoose.connection.once('open',()=>{

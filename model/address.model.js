@@ -1,11 +1,8 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 const addressSchema = new Schema({
-  name: { type: String, required: true },
-  lastname: String,
-  email: { type: String, required: true },
-  address: { type: String, required: true },
-  pincode: { type: String, required: true },
+  id: { type: String, required: true, unique: true },
+  address: Array,
 })
 
 const Address = mongoose.model("Address", addressSchema);

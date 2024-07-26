@@ -1,12 +1,12 @@
 const Product=require('../model/products_model');
-const products=require('../Db/product');
+const {products,prod}=require('../Db/product');
 
 
 const postalldata = async (req, res) =>{
     try{
       await Product.deleteMany({});
-      const data = await Product.insertMany(products.products);
-
+      const data = await Product.insertMany(prod.products);
+      console.log(products);
       res.status(201).json({
         status:"success",
         data:data

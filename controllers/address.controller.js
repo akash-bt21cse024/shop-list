@@ -1,10 +1,10 @@
-const Address=require('../model/address.model');
+const Address = require("../model/address.model");
 
-const postaddress = async(req,res)=>{
+const postaddress = async (req, res) => {
   try {
-    console.log(req.body)
-    const { id: userId,product } = req.body;
-     console.log(userId,product)
+    console.log(req.body);
+    const { id: userId, product } = req.body;
+    console.log(userId, product);
     const flag = await Address.findOne({ id: userId });
     console.log(flag);
     if (!flag) {
@@ -12,10 +12,11 @@ const postaddress = async(req,res)=>{
       await newwishlist.save();
       res.status(201).json({ status: "success", messge: "make new address" });
     } else {
-      let array = flag.address;;
-      const tempflag= array.some(item => item.pincode === product.pincode);
-      if(!tempflag){
-      array = [...array, product];}
+      let array = flag.address;
+      const tempflag = array.some((item) => item.pincode === product.pincode);
+      if (!tempflag) {
+        array = [...array, product];
+      }
       await Address.updateOne({ id: userId }, { $set: { address: array } });
       res
         .status(201)
@@ -28,13 +29,13 @@ const postaddress = async(req,res)=>{
     });
     console.error("Error:", err);
   }
-}
-const deletaddress =async(req,res)=>{
-  const temp=req.params.userid;
-  const temp1=temp.split("+");
+};
+const deletaddress = async (req, res) => {
+  const temp = req.params.userid;
+  const temp1 = temp.split("+");
 
-  const userId=temp1[0];
-  const pincode=temp1[1];
+  const userId = temp1[0];
+  const pincode = temp1[1];
   try {
     const flag = await Address.findOne({ id: userId });
 
@@ -44,10 +45,7 @@ const deletaddress =async(req,res)=>{
       let newarray = arry.filter((item) => item.pincode !== pincode);
       console.log(newarray);
 
-      await Address.updateOne(
-        { id: userId },
-        { $set: { address: newarray } },
-      );
+      await Address.updateOne({ id: userId }, { $set: { address: newarray } });
       res.status(200).json({
         status: "success",
         message: "product removed from address",
@@ -64,11 +62,10 @@ const deletaddress =async(req,res)=>{
     });
     console.error("Error---:", err);
   }
-}
-const getaddress = async (req,res)=>{
+};
+const getaddress = async (req, res) => {
   try {
-    const userId=req.params.userid;
-
+    const userId = req.params.userid;
 
     const flag = await Address.findOne({ id: userId });
 
@@ -88,5 +85,5 @@ const getaddress = async (req,res)=>{
     });
     console.error("Error:", err);
   }
-}
-module.exports = {postaddress,deletaddress,getaddress}
+};
+module.exports = { postaddress, deletaddress, getaddress };
